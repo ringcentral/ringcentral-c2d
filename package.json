@@ -1,0 +1,26 @@
+{
+  "name": "ringcentral-c2d",
+  "version": "0.0.1",
+  "description": "RingCentral ClickToDial and RingCentral ClickToSMS library",
+  "main": "build/index.js",
+  "module": "src/index.js",
+  "repository": "https://github.com/embbnux/ringcentral-c2d.git",
+  "license": "MIT",
+  "author": "RingCentral Integrations Team",
+  "scripts": {
+    "prepublish": "tsc && webpack",
+    "tsc": "tsc",
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^4.6.0",
+    "ts-loader": "^5.3.3",
+    "tslint": "^5.12.1",
+    "typescript": "^3.2.4",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "libphonenumber-js": "^1.7.7"
+  }
+}
