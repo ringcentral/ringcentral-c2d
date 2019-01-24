@@ -39,9 +39,9 @@ var clickToDialInject = new RingCentralC2DInject({
 ### CDN
 
 ```
-<link href="https://unpkg.com/ringcentral-c2d@0.0.1/build/styles.css" rel="stylesheet">
+<link href="https://unpkg.com/ringcentral-c2d@0.0.2/build/styles.css" rel="stylesheet">
 <script src="https://unpkg.com/libphonenumber-js@1.7.7/bundle/libphonenumber-min.js"></script>
-<script src="https://unpkg.com/ringcentral-c2d@0.0.1/build/index.js"></script>
+<script src="https://unpkg.com/ringcentral-c2d@0.0.2/build/index.js"></script>
 <script>
   var clickToDialInject = new RingCentralC2DInject({
     onCallClick: function (phoneNumber) {

@@ -1,6 +1,6 @@
 {
   "name": "ringcentral-c2d",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "RingCentral ClickToDial and RingCentral ClickToSMS library",
   "main": "build/index.js",
   "module": "src/index.js",
