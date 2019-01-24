@@ -11,24 +11,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="UTF-8">
   <title>Demo</title>
-  <link href="https://unpkg.com/ringcentral-c2d@0.0.1/build/styles.css" rel="stylesheet">
+  <link href="https://unpkg.com/ringcentral-c2d@0.0.2/build/styles.css" rel="stylesheet">
 </head>
 <body>
 <p>Click to SMS: <a href="sms:+1234567890">+1234567890</a></p>
 <p>Click to Call: <a href="tel:+1234567888">+1234567888</a></p>
-<p>+1234567890</p>
-<p>+1234567888</p>
-</body>
+<p>+12345678900</p>
+<p>+12345678901</p>
+<p>+1-2345-678-901</p>
+<p><input type="text" name="number" value="+12345678901" /></p>
 <script src="https://unpkg.com/libphonenumber-js@1.7.7/bundle/libphonenumber-min.js"></script>
-<script src="https://unpkg.com/ringcentral-c2d@0.0.1/build/index.js"></script>
+<script src="https://unpkg.com/ringcentral-c2d@0.0.2/build/index.js"></script>
 <script>
-  var clickToDialInject = new RingCentralC2DInject({
+  window.clickToDialInject = new RingCentralC2DInject({
     onCallClick: function (phoneNumber) {
       console.log('Click To Dial:', phoneNumber);
+      alert('Click To Dial:' + phoneNumber);
     },
     onSmsClick: function (phoneNumber) {
       console.log('Click To SMS:', phoneNumber);
+      alert('Click To SMS:' + phoneNumber);
     }
   })
 </script>
+<iframe src="./iframe.html"></iframe>
+</body>
 </html>
