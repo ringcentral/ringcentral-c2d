@@ -2,7 +2,7 @@
 
 This library can help you to get phone numbers in web page and show a RingCentral Click to Dial and Click to SMS shotcut when hover on phone number text.
 
-![image](https://user-images.githubusercontent.com/7036536/51652646-5c5e0b00-1fcb-11e9-8982-74147281ed30.png)
+![clicktodial](https://user-images.githubusercontent.com/7036536/51652788-d2627200-1fcb-11e9-8ba3-9e50baeaf8a6.png)
 
 [See Demo](https://embbnux.github.io/ringcentral-c2d/)
 
