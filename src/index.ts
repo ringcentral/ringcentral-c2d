@@ -1,6 +1,11 @@
 import { findNumbers, CountryCode } from 'libphonenumber-js';
 
-const NODE_TEYPE_EXCLUDES = ['STYLE', 'OPTION', 'SCRIPT', 'INPUT', 'TEXT', 'TEXTAREA'];
+const RC_C2D_TAGNAME = 'RC-WIDGET-C2D';
+const RC_C2D_ELEM_TAGNAME = 'RC-WIDGET-C2D-MENU';
+const RC_C2D_ELEM_ATTRIBUTE = 'DATA_PHONE_NUMBER';
+const RC_C2D_MENU_HEIGHT = 30;
+
+const NODE_TEYPE_EXCLUDES = ['STYLE', 'OPTION', 'SCRIPT', 'TEXT', 'TEXTAREA', RC_C2D_ELEM_TAGNAME];
 
 function isTelLinkNode(node: HTMLElement) : boolean {
   return node.tagName === 'A' && (node.matches('a[href^="tel:"]') || node.matches('a[href^="sms:"]'));
@@ -10,8 +15,15 @@ function getAllNumberNodes(rootNode: any) : any[]{
   let numberNodes = [];
   if (
     !rootNode ||
-    NODE_TEYPE_EXCLUDES.indexOf(rootNode.tagName) > -1
+    NODE_TEYPE_EXCLUDES.indexOf(rootNode.tagName) > -1 ||
+    rootNode.nodeType ===  Node.COMMENT_NODE
   ) {
+    return numberNodes;
+  }
+  if (rootNode.tagName === 'INPUT' && rootNode.type === 'text' && rootNode.value) {
+    if (rootNode.value.replace(/[^\d]/g, '').length > 1) {
+      numberNodes.push(rootNode);
+    }
     return numberNodes;
   }
   if (rootNode.nodeType === Node.TEXT_NODE) {
@@ -40,11 +52,6 @@ function getAllNumberNodes(rootNode: any) : any[]{
   return numberNodes;
 }
 
-const RC_C2D_TAGNAME = 'RC-WIDGET-C2D';
-const RC_C2D_ELEM_TAGNAME = 'RC-WIDGET-C2D-MENU';
-const RC_C2D_ELEM_ATTRIBUTE = 'DATA_PHONE_NUMBER';
-const RC_C2D_MENU_HEIGHT = 30;
-
 export default class ClickToDialInject {
   private _onSmsClick : (number) => void;
   private _onCallClick : (number) => void;
@@ -57,25 +64,32 @@ export default class ClickToDialInject {
   private _currentNumber : string;
   private _countryCode : CountryCode;
   private _c2dMenuLeft : boolean;
+  private _bubblePhoneNumber : boolean;
 
   constructor({
     onSmsClick,
     onCallClick,
     countryCode = 'US',
+    bubbleInIframe = true,
   } : {
     onSmsClick: (phoneNumber: number) => void,
     onCallClick: (phoneNumber: number) => void,
     countryCode: CountryCode,
+    bubbleInIframe: boolean,
   }) {
     this._onSmsClick = onSmsClick;
     this._onCallClick = onCallClick;
-    this._countryCode = countryCode;
+    this._countryCode = countryCode
+    this._bubblePhoneNumber = bubbleInIframe && window !== window.parent;
     this._elemObserver = null;
     this._c2dMenuEl = null;
     this._c2dNumberHover = false;
     this._currentNumber = null;
     this._initObserver();
     this._injectC2DMenu();
+    if (bubbleInIframe) {
+      this._initIframeBubblePhoneNumberListener();
+    }
   }
 
   _initObserver() {
@@ -100,13 +114,20 @@ export default class ClickToDialInject {
 
   _handlePhoneNumberNodes(nodes) {
     nodes.forEach((node) => {
+      if (node.tagName === 'INPUT') {
+        const numbers = findNumbers(node.value, { defaultCountry: this._countryCode, v2: true });
+        if (numbers.length > 0) {
+          this._createHoverEventListener(node);
+        }
+        return;
+      }
       const parentNode = node.parentNode;
       if (parentNode && parentNode.tagName === RC_C2D_TAGNAME) {
-        this._createHoverEventListener(parentNode)
+        this._createHoverEventListener(parentNode);
         return;
       }
       if (isTelLinkNode(node)) {
-        this._createHoverEventListener(node)
+        this._createHoverEventListener(node);
         return;
       }
       if (!node.data) {
@@ -124,6 +145,7 @@ export default class ClickToDialInject {
       el.textContent = originPhoneNumber;
       el.setAttribute(RC_C2D_ELEM_ATTRIBUTE, result['number'].number);
       parentNode.insertBefore(el, node.nextSibling);
+      this._createHoverEventListener(el);
       this._handlePhoneNumberNodes([newTextNode]); // next handle loop
     });
   }
@@ -149,6 +171,12 @@ export default class ClickToDialInject {
       'mouseleave',
       this._onC2DNumberMouseLeave
     );
+    if (node.tagName === 'INPUT') {
+      node.removeEventListener(
+        'keydown',
+        this._onC2DNumberMouseLeave
+      );
+    }
   }
 
   _createHoverEventListener(node) {
@@ -161,6 +189,12 @@ export default class ClickToDialInject {
       'mouseleave',
       this._onC2DNumberMouseLeave
     );
+    if (node.tagName === 'INPUT') {
+      node.addEventListener(
+        'keydown',
+        this._onC2DNumberMouseLeave
+      );
+    }
   }
 
   _injectC2DMenu() {
@@ -219,6 +253,8 @@ export default class ClickToDialInject {
     if (e.currentTarget.tagName === 'A') {
       const telLink = e.currentTarget.href
       this._currentNumber = telLink.replace(/[^\d+*-]/g, '')
+    } else if (e.currentTarget.tagName === 'INPUT') {
+      this._currentNumber = e.currentTarget.value.replace(/[^\d+*-]/g, '');
     } else {
       this._currentNumber = e.currentTarget.getAttribute(RC_C2D_ELEM_ATTRIBUTE);
     }
@@ -271,10 +307,43 @@ export default class ClickToDialInject {
   }
 
   onCallClick() {
+    if (this._bubblePhoneNumber) {
+      this._postPhoneNumberToParent(this._currentNumber, 'Call');
+      return;
+    }
     this._onCallClick(this._currentNumber);
   }
 
   onSmsClick() {
+    if (this._bubblePhoneNumber) {
+      this._postPhoneNumberToParent(this._currentNumber, 'SMS');
+      return;
+    }
     this._onSmsClick(this._currentNumber);
+  }
+
+  _initIframeBubblePhoneNumberListener() {
+    window.addEventListener('message', (event) => {
+      const message = event.data;
+      if (message.type !== 'rc-c2d-phone-number-bubble') {
+        return;
+      }
+      this._currentNumber = message.phoneNumber;
+      if (message.eventType === 'Call') {
+        this.onCallClick();
+        return;
+      }
+      if (message.eventType === 'SMS') {
+        this.onSmsClick();
+      }
+    });
+  }
+
+  _postPhoneNumberToParent(phoneNumber : string, type : string) {
+    window.parent.postMessage({
+      type: 'rc-c2d-phone-number-bubble',
+      eventType: type,
+      phoneNumber,
+    }, '*');
   }
 }
