@@ -4,7 +4,7 @@ This library can help you to get phone numbers in web page and show a RingCentra
 
 ![clicktodial](https://user-images.githubusercontent.com/7036536/51652788-d2627200-1fcb-11e9-8ba3-9e50baeaf8a6.png)
 
-[See Demo](https://embbnux.github.io/ringcentral-c2d/)
+[See Demo](https://ringcentral.github.io/ringcentral-c2d/)
 
 ## Install
 
