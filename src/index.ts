@@ -308,7 +308,7 @@ export default class ClickToDialInject {
 
   onCallClick() {
     if (this._bubblePhoneNumber) {
-      this._postPhoneNumberToParent(this._currentNumber, 'Call');
+      this._postPhoneNumberToTop(this._currentNumber, 'Call');
       return;
     }
     this._onCallClick(this._currentNumber);
@@ -316,7 +316,7 @@ export default class ClickToDialInject {
 
   onSmsClick() {
     if (this._bubblePhoneNumber) {
-      this._postPhoneNumberToParent(this._currentNumber, 'SMS');
+      this._postPhoneNumberToTop(this._currentNumber, 'SMS');
       return;
     }
     this._onSmsClick(this._currentNumber);
@@ -339,8 +339,8 @@ export default class ClickToDialInject {
     });
   }
 
-  _postPhoneNumberToParent(phoneNumber : string, type : string) {
-    window.parent.postMessage({
+  _postPhoneNumberToTop(phoneNumber : string, type : string) {
+    window.top.postMessage({
       type: 'rc-c2d-phone-number-bubble',
       eventType: type,
       phoneNumber,
