@@ -336,14 +336,14 @@ var ClickToDialInject = /** @class */ (function () {
     };
     ClickToDialInject.prototype.onCallClick = function () {
         if (this._bubblePhoneNumber) {
-            this._postPhoneNumberToParent(this._currentNumber, 'Call');
+            this._postPhoneNumberToTop(this._currentNumber, 'Call');
             return;
         }
         this._onCallClick(this._currentNumber);
     };
     ClickToDialInject.prototype.onSmsClick = function () {
         if (this._bubblePhoneNumber) {
-            this._postPhoneNumberToParent(this._currentNumber, 'SMS');
+            this._postPhoneNumberToTop(this._currentNumber, 'SMS');
             return;
         }
         this._onSmsClick(this._currentNumber);
@@ -365,8 +365,8 @@ var ClickToDialInject = /** @class */ (function () {
             }
         });
     };
-    ClickToDialInject.prototype._postPhoneNumberToParent = function (phoneNumber, type) {
-        window.parent.postMessage({
+    ClickToDialInject.prototype._postPhoneNumberToTop = function (phoneNumber, type) {
+        window.top.postMessage({
             type: 'rc-c2d-phone-number-bubble',
             eventType: type,
             phoneNumber: phoneNumber,
