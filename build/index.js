@@ -216,8 +216,6 @@ var ClickToDialInject = /** @class */ (function () {
     }
     ClickToDialInject.prototype._initObserver = function () {
         var _this = this;
-        var numberNodes = getAllNumberNodes(document.body);
-        this._handlePhoneNumberNodes(numberNodes);
         this._elemObserver = new MutationObserver(function (mutations) {
             var addedNumberNodes = [];
             var removedNodes = [];
@@ -233,6 +231,21 @@ var ClickToDialInject = /** @class */ (function () {
             _this._removeC2Dhandler(removedNodes);
         });
         this._elemObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+        this._C2DMenuObserver = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (!mutation.removedNodes || mutation.removedNodes.length === 0) {
+                    return;
+                }
+                mutation.removedNodes.forEach(function (node) {
+                    if (_this._c2dMenuEl && node === _this._c2dMenuEl && !_this._c2dMenuEl.parentElement) {
+                        document.body.appendChild(_this._c2dMenuEl);
+                    }
+                });
+            });
+        });
+        this._C2DMenuObserver.observe(document.body, { childList: true });
+        var numberNodes = getAllNumberNodes(document.body);
+        this._handlePhoneNumberNodes(numberNodes);
     };
     ClickToDialInject.prototype._handlePhoneNumberNodes = function (nodes) {
         var _this = this;

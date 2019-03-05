@@ -56,6 +56,7 @@ export default class ClickToDialInject {
   private _onSmsClick : (number) => void;
   private _onCallClick : (number) => void;
   private _elemObserver : MutationObserver;
+  private _C2DMenuObserver : MutationObserver;
   private _c2dMenuEl : HTMLElement;
   private _callBtn : HTMLElement;
   private _smsBtn : HTMLElement;
@@ -93,8 +94,6 @@ export default class ClickToDialInject {
   }
 
   _initObserver() {
-    const numberNodes = getAllNumberNodes(document.body);
-    this._handlePhoneNumberNodes(numberNodes);
     this._elemObserver = new MutationObserver(mutations => {
       let addedNumberNodes = [];
       let removedNodes = [];
@@ -110,6 +109,21 @@ export default class ClickToDialInject {
       this._removeC2Dhandler(removedNodes);
     });
     this._elemObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+    this._C2DMenuObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (!mutation.removedNodes || mutation.removedNodes.length === 0) {
+          return;
+        }
+        mutation.removedNodes.forEach((node) => {
+          if (this._c2dMenuEl && node === this._c2dMenuEl && !this._c2dMenuEl.parentElement) {
+            document.body.appendChild(this._c2dMenuEl);
+          }
+        });
+      });
+    });
+    this._C2DMenuObserver.observe(document.body, { childList: true });
+    const numberNodes = getAllNumberNodes(document.body);
+    this._handlePhoneNumberNodes(numberNodes);
   }
 
   _handlePhoneNumberNodes(nodes) {
