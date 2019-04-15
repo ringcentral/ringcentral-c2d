@@ -107,6 +107,7 @@ var RC_C2D_ELEM_TAGNAME = 'RC-WIDGET-C2D-MENU';
 var RC_C2D_ELEM_ATTRIBUTE = 'DATA_PHONE_NUMBER';
 var RC_C2D_MENU_HEIGHT = 30;
 var NODE_TEYPE_EXCLUDES = ['STYLE', 'OPTION', 'SCRIPT', 'TEXT', 'TEXTAREA', RC_C2D_ELEM_TAGNAME];
+var DEFAULT_LOGO = "\n  <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" + RC_C2D_MENU_HEIGHT + "\" height=\"" + RC_C2D_MENU_HEIGHT + "\" viewBox=\"0 0 16 16\">\n    <g fill=\"none\" fill-rule=\"evenodd\">\n      <rect width=\"16\" height=\"16\" fill=\"#F80\" rx=\"3.75\"/>\n      <path fill=\"#FFF\" d=\"M5.846 2h4.308c1.337 0 1.822.14 2.311.4.49.262.873.646 1.134 1.135.262.489.401.974.401 2.31v7.976c0 .062-.006.085-.019.108a.127.127 0 0 1-.052.052c-.023.013-.046.019-.108.019H5.846c-1.337 0-1.822-.14-2.311-.4A2.726 2.726 0 0 1 2.4 12.464c-.262-.489-.401-.974-.401-2.31v-4.31c0-1.336.14-1.821.4-2.31A2.726 2.726 0 0 1 3.536 2.4C4.024 2.139 4.509 2 5.845 2z\"/>\n      <path fill=\"#0684BD\" d=\"M5.078 3.813h5.84c.7 0 1.266.566 1.266 1.265v2.953c0 .925-.874 1.505-1.511 1.692.285.54.733 1.356 1.343 2.449H9.953L8.592 9.815h-.088a.28.28 0 0 1-.28-.28V7.883h1.898V5.873H5.881v3.604c0 .6.118 1.64 1.025 2.695H4.843c-.758-.555-1.03-1.689-1.03-2.357V5.078c0-.699.566-1.266 1.265-1.266z\"/>\n    </g>\n  </svg>\n";
 function isTelLinkNode(node) {
     return node.tagName === 'A' && (node.matches('a[href^="tel:"]') || node.matches('a[href^="sms:"]'));
 }
@@ -152,7 +153,7 @@ function getAllNumberNodes(rootNode) {
 }
 var ClickToDialInject = /** @class */ (function () {
     function ClickToDialInject(_a) {
-        var onSmsClick = _a.onSmsClick, onCallClick = _a.onCallClick, _b = _a.countryCode, countryCode = _b === void 0 ? 'US' : _b, _c = _a.bubbleInIframe, bubbleInIframe = _c === void 0 ? true : _c, _d = _a.enabled, enabled = _d === void 0 ? true : _d;
+        var onSmsClick = _a.onSmsClick, onCallClick = _a.onCallClick, _b = _a.countryCode, countryCode = _b === void 0 ? 'US' : _b, _c = _a.bubbleInIframe, bubbleInIframe = _c === void 0 ? true : _c, _d = _a.enabled, enabled = _d === void 0 ? true : _d, _e = _a.logoIcon, logoIcon = _e === void 0 ? DEFAULT_LOGO : _e, _f = _a.callBtnTitle, callBtnTitle = _f === void 0 ? 'Call with RingCentral' : _f, _g = _a.smsBtnTitle, smsBtnTitle = _g === void 0 ? 'SMS with RingCentral' : _g;
         var _this = this;
         this._onC2DNumberMouseEnter = function (e) {
             if (e.rcHandled || !_this._enabled) {
@@ -215,6 +216,9 @@ var ClickToDialInject = /** @class */ (function () {
         this._c2dMenuEl = null;
         this._c2dNumberHover = false;
         this._currentNumber = null;
+        this._logoIcon = logoIcon;
+        this._callBtnTitle = callBtnTitle;
+        this._smsBtnTitle = smsBtnTitle;
         if (this._enabled) {
             this.start();
         }
@@ -336,7 +340,7 @@ var ClickToDialInject = /** @class */ (function () {
             return;
         }
         this._c2dMenuEl = document.createElement(RC_C2D_ELEM_TAGNAME);
-        this._c2dMenuEl.innerHTML = "\n      <div class=\"rc-widget-c2d-menu-wrapper\">\n        <div class=\"rc-widget-c2d-logo\">\n          <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" + RC_C2D_MENU_HEIGHT + "\" height=\"" + RC_C2D_MENU_HEIGHT + "\" viewBox=\"0 0 16 16\">\n            <g fill=\"none\" fill-rule=\"evenodd\">\n              <rect width=\"16\" height=\"16\" fill=\"#F80\" rx=\"3.75\"/>\n              <path fill=\"#FFF\" d=\"M5.846 2h4.308c1.337 0 1.822.14 2.311.4.49.262.873.646 1.134 1.135.262.489.401.974.401 2.31v7.976c0 .062-.006.085-.019.108a.127.127 0 0 1-.052.052c-.023.013-.046.019-.108.019H5.846c-1.337 0-1.822-.14-2.311-.4A2.726 2.726 0 0 1 2.4 12.464c-.262-.489-.401-.974-.401-2.31v-4.31c0-1.336.14-1.821.4-2.31A2.726 2.726 0 0 1 3.536 2.4C4.024 2.139 4.509 2 5.845 2z\"/>\n              <path fill=\"#0684BD\" d=\"M5.078 3.813h5.84c.7 0 1.266.566 1.266 1.265v2.953c0 .925-.874 1.505-1.511 1.692.285.54.733 1.356 1.343 2.449H9.953L8.592 9.815h-.088a.28.28 0 0 1-.28-.28V7.883h1.898V5.873H5.881v3.604c0 .6.118 1.64 1.025 2.695H4.843c-.758-.555-1.03-1.689-1.03-2.357V5.078c0-.699.566-1.266 1.265-1.266z\"/>\n            </g>\n          </svg>\n        </div>\n        <div class=\"rc-widget-action-icon rc-widget-c2d-icon\" title=\"Call with RingCentral\">\n          <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 26\">\n            <path fill=\"#0083BF\" fill-rule=\"evenodd\" stroke=\"#0684BD\" stroke-width=\".9\" d=\"M6.656 17.651C.942 10.547.28 4.627 2.545 2.607c.592-.522 2.16-1.323 2.892-1.427.801-.14 1.602.243 2.02 1.01.802 1.636 1.777 3.238 2.788 4.805.452.697.348 1.567-.244 2.16-.349.348-.767.557-1.15.765a3.18 3.18 0 0 0-.801.523s-.105.104-.105.313c-.035.453.035 1.707 2.02 4.214 2.16 2.647 3.45 2.82 3.798 2.82.14 0 .244-.034.244-.034.244-.21.453-.453.662-.697.314-.348.593-.696 1.01-.975.697-.452 1.638-.348 2.16.21 1.325 1.323 2.753 2.576 4.112 3.76.662.557.906 1.428.557 2.16-.244.66-1.359 2.02-2.02 2.541-.558.488-1.324.697-2.195.697-3.345 0-7.7-2.925-11.637-7.8z\"/>\n          </svg>\n        </div>\n        <div class=\"rc-widget-c2d-separator-line\"></div>\n        <div class=\"rc-widget-action-icon rc-widget-c2sms-icon\" title=\"SMS with RingCentral\">\n          <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 22 21\">\n            <path fill=\"#0684BD\" fill-rule=\"nonzero\" d=\"M10.944.014C4.91.014.007 4.068.007 9.316c0 2.86 1.54 5.626 4.085 7.417-.094.534-.377 1.257-1.162 2.64l-.692 1.131h1.383a6.976 6.976 0 0 0 4.84-1.917c.817.157 1.634.252 2.483.252 6.034 0 10.936-4.275 10.936-9.523 0-5.28-4.902-9.302-10.936-9.302z\"/>\n          </svg>\n        </div>\n      </div>\n      <div class=\"rc-widget-c2d-arrow\">\n        <div class=\"rc-widget-c2d-inner-arrow\"></div>\n      </div>\n    ";
+        this._c2dMenuEl.innerHTML = "\n      <div class=\"rc-widget-c2d-menu-wrapper\">\n        <div class=\"rc-widget-c2d-logo\">\n          " + this._logoIcon + "\n        </div>\n        <div class=\"rc-widget-action-icon rc-widget-c2d-icon\">\n          <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 26\">\n            <path fill=\"#0083BF\" fill-rule=\"evenodd\" stroke=\"#0684BD\" stroke-width=\".9\" d=\"M6.656 17.651C.942 10.547.28 4.627 2.545 2.607c.592-.522 2.16-1.323 2.892-1.427.801-.14 1.602.243 2.02 1.01.802 1.636 1.777 3.238 2.788 4.805.452.697.348 1.567-.244 2.16-.349.348-.767.557-1.15.765a3.18 3.18 0 0 0-.801.523s-.105.104-.105.313c-.035.453.035 1.707 2.02 4.214 2.16 2.647 3.45 2.82 3.798 2.82.14 0 .244-.034.244-.034.244-.21.453-.453.662-.697.314-.348.593-.696 1.01-.975.697-.452 1.638-.348 2.16.21 1.325 1.323 2.753 2.576 4.112 3.76.662.557.906 1.428.557 2.16-.244.66-1.359 2.02-2.02 2.541-.558.488-1.324.697-2.195.697-3.345 0-7.7-2.925-11.637-7.8z\"/>\n          </svg>\n        </div>\n        <div class=\"rc-widget-c2d-separator-line\"></div>\n        <div class=\"rc-widget-action-icon rc-widget-c2sms-icon\">\n          <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 22 21\">\n            <path fill=\"#0684BD\" fill-rule=\"nonzero\" d=\"M10.944.014C4.91.014.007 4.068.007 9.316c0 2.86 1.54 5.626 4.085 7.417-.094.534-.377 1.257-1.162 2.64l-.692 1.131h1.383a6.976 6.976 0 0 0 4.84-1.917c.817.157 1.634.252 2.483.252 6.034 0 10.936-4.275 10.936-9.523 0-5.28-4.902-9.302-10.936-9.302z\"/>\n          </svg>\n        </div>\n      </div>\n      <div class=\"rc-widget-c2d-arrow\">\n        <div class=\"rc-widget-c2d-inner-arrow\"></div>\n      </div>\n    ";
         this._c2dMenuEl.setAttribute('class', 'rc-widget-c2d-menu');
         this._c2dMenuEl.addEventListener('mouseenter', function () {
             return _this._onC2DMenuMouseEnter();
@@ -348,7 +352,14 @@ var ClickToDialInject = /** @class */ (function () {
         this._callBtn.addEventListener('click', function () { return _this._onCallClick(); });
         this._smsBtn = this._c2dMenuEl.querySelector('.rc-widget-c2sms-icon');
         this._smsBtn.addEventListener('click', function () { return _this._onSmsClick(); });
+        this.renderBtnTitles();
         document.body.appendChild(this._c2dMenuEl);
+    };
+    ClickToDialInject.prototype.renderBtnTitles = function (callBtnTitle, smsBtnTitle) {
+        if (callBtnTitle === void 0) { callBtnTitle = this._callBtnTitle; }
+        if (smsBtnTitle === void 0) { smsBtnTitle = this._smsBtnTitle; }
+        this._callBtn.setAttribute('title', callBtnTitle);
+        this._smsBtn.setAttribute('title', smsBtnTitle);
     };
     ClickToDialInject.prototype._cleanC2DMenu = function () {
         if (this._c2dMenuEl) {
