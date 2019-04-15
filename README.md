@@ -36,6 +36,9 @@ var clickToDialInject = new RingCentralC2DInject({
     console.log('Click To SMS:', phoneNumber);
   }
 })
+
+// Stop
+clickToDialInject.dispose();
 ```
 
 ### CDN
@@ -52,6 +55,9 @@ var clickToDialInject = new RingCentralC2DInject({
     onSmsClick: function (phoneNumber) {
       console.log('Click To SMS:', phoneNumber);
     }
-  })
+  });
+
+  // Stop
+  clickToDialInject.dispose();
 </script>
 ```
