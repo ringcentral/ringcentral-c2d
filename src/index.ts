@@ -53,8 +53,8 @@ function getAllNumberNodes(rootNode: any) : any[]{
 }
 
 export default class ClickToDialInject {
-  private _onSmsClick : (number) => void;
-  private _onCallClick : (number) => void;
+  private _onSmsClickFuncs : ((number) => void)[];
+  private _onCallClickFuncs : ((number) => void)[];
   private _elemObserver : MutationObserver;
   private _C2DMenuObserver : MutationObserver;
   private _c2dMenuEl : HTMLElement;
@@ -66,28 +66,39 @@ export default class ClickToDialInject {
   private _countryCode : CountryCode;
   private _c2dMenuLeft : boolean;
   private _bubblePhoneNumber : boolean;
+  private _enabled : boolean;
 
   constructor({
     onSmsClick,
     onCallClick,
     countryCode = 'US',
     bubbleInIframe = true,
+    enabled = true,
   } : {
-    onSmsClick: (phoneNumber: number) => void,
-    onCallClick: (phoneNumber: number) => void,
+    onSmsClick?: (phoneNumber: number) => void,
+    onCallClick?: (phoneNumber: number) => void,
     countryCode: CountryCode,
     bubbleInIframe: boolean,
+    enabled: boolean,
   }) {
-    this._onSmsClick = onSmsClick;
-    this._onCallClick = onCallClick;
+    this._onSmsClickFuncs = [];
+    this._onCallClickFuncs = [];
+    if (onSmsClick) {
+      this._onSmsClickFuncs.push(onSmsClick);
+    }
+    if (onCallClick) {
+      this._onCallClickFuncs.push(onCallClick);
+    }
+    this._enabled = enabled;
     this._countryCode = countryCode
     this._bubblePhoneNumber = bubbleInIframe && window !== window.parent;
     this._elemObserver = null;
     this._c2dMenuEl = null;
     this._c2dNumberHover = false;
     this._currentNumber = null;
-    this._initObserver();
-    this._injectC2DMenu();
+    if (this._enabled) {
+      this.start();
+    }
     if (bubbleInIframe) {
       this._initIframeBubblePhoneNumberListener();
     }
@@ -124,6 +135,17 @@ export default class ClickToDialInject {
     this._C2DMenuObserver.observe(document.body, { childList: true });
     const numberNodes = getAllNumberNodes(document.body);
     this._handlePhoneNumberNodes(numberNodes);
+  }
+
+  _stopObserver() {
+    if (this._elemObserver) {
+      this._elemObserver.disconnect();
+      this._elemObserver = null;
+    }
+    if (this._C2DMenuObserver) {
+      this._C2DMenuObserver.disconnect();
+      this._C2DMenuObserver = null;
+    }
   }
 
   _handlePhoneNumberNodes(nodes) {
@@ -251,15 +273,24 @@ export default class ClickToDialInject {
       this._onC2DMenuMouseLeave()
     );
     this._callBtn = this._c2dMenuEl.querySelector('.rc-widget-c2d-icon');
-    this._callBtn.addEventListener('click', () => this.onCallClick());
+    this._callBtn.addEventListener('click', () => this._onCallClick());
 
     this._smsBtn = this._c2dMenuEl.querySelector('.rc-widget-c2sms-icon');
-    this._smsBtn.addEventListener('click', () => this.onSmsClick());
+    this._smsBtn.addEventListener('click', () => this._onSmsClick());
     document.body.appendChild(this._c2dMenuEl);
   }
 
+  _cleanC2DMenu() {
+    if (this._c2dMenuEl) {
+      this._callBtn = null;
+      this._smsBtn = null;
+      this._c2dMenuEl.remove();
+      this._c2dMenuEl = null;
+    }
+  }
+
   _onC2DNumberMouseEnter = (e : any) : void => {
-    if (e.rcHandled) {
+    if (e.rcHandled || !this._enabled) {
       return;
     }
     e.rcHandled = true;
@@ -294,7 +325,7 @@ export default class ClickToDialInject {
   }
 
   _onC2DNumberMouseLeave = (e : any) : void => {
-    if (e.rcHandled) {
+    if (e.rcHandled  || !this._enabled) {
       return;
     }
     e.rcHandled = true;
@@ -320,20 +351,32 @@ export default class ClickToDialInject {
     this._c2dMenuEl.style.display = 'none';
   }
 
-  onCallClick() {
+  _onCallClick() {
     if (this._bubblePhoneNumber) {
       this._postPhoneNumberToTop(this._currentNumber, 'Call');
       return;
     }
-    this._onCallClick(this._currentNumber);
+    this._onCallClickFuncs.forEach(func => {
+      func(this._currentNumber);
+    });
   }
 
-  onSmsClick() {
+  _onSmsClick() {
     if (this._bubblePhoneNumber) {
       this._postPhoneNumberToTop(this._currentNumber, 'SMS');
       return;
     }
-    this._onSmsClick(this._currentNumber);
+    this._onSmsClickFuncs.forEach(func => {
+      func(this._currentNumber);
+    });
+  }
+
+  onCallClick(func: (number) => void) {
+    this._onCallClickFuncs.push(func);
+  }
+
+  onSmsClick(func: (number) => void) {
+    this._onSmsClickFuncs.push(func);
   }
 
   _initIframeBubblePhoneNumberListener() {
@@ -344,11 +387,11 @@ export default class ClickToDialInject {
       }
       this._currentNumber = message.phoneNumber;
       if (message.eventType === 'Call') {
-        this.onCallClick();
+        this._onCallClick();
         return;
       }
       if (message.eventType === 'SMS') {
-        this.onSmsClick();
+        this._onSmsClick();
       }
     });
   }
@@ -359,5 +402,17 @@ export default class ClickToDialInject {
       eventType: type,
       phoneNumber,
     }, '*');
+  }
+
+  dispose() {
+    this._enabled = false;
+    this._stopObserver();
+    this._cleanC2DMenu();
+  }
+
+  start() {
+    this._enabled = true;
+    this._initObserver();
+    this._injectC2DMenu();
   }
 }

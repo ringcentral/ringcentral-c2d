@@ -152,10 +152,10 @@ function getAllNumberNodes(rootNode) {
 }
 var ClickToDialInject = /** @class */ (function () {
     function ClickToDialInject(_a) {
-        var onSmsClick = _a.onSmsClick, onCallClick = _a.onCallClick, _b = _a.countryCode, countryCode = _b === void 0 ? 'US' : _b, _c = _a.bubbleInIframe, bubbleInIframe = _c === void 0 ? true : _c;
+        var onSmsClick = _a.onSmsClick, onCallClick = _a.onCallClick, _b = _a.countryCode, countryCode = _b === void 0 ? 'US' : _b, _c = _a.bubbleInIframe, bubbleInIframe = _c === void 0 ? true : _c, _d = _a.enabled, enabled = _d === void 0 ? true : _d;
         var _this = this;
         this._onC2DNumberMouseEnter = function (e) {
-            if (e.rcHandled) {
+            if (e.rcHandled || !_this._enabled) {
                 return;
             }
             e.rcHandled = true;
@@ -193,23 +193,31 @@ var ClickToDialInject = /** @class */ (function () {
             }
         };
         this._onC2DNumberMouseLeave = function (e) {
-            if (e.rcHandled) {
+            if (e.rcHandled || !_this._enabled) {
                 return;
             }
             e.rcHandled = true;
             _this._c2dNumberHover = false;
             _this._updateC2DMenuDisplay();
         };
-        this._onSmsClick = onSmsClick;
-        this._onCallClick = onCallClick;
+        this._onSmsClickFuncs = [];
+        this._onCallClickFuncs = [];
+        if (onSmsClick) {
+            this._onSmsClickFuncs.push(onSmsClick);
+        }
+        if (onCallClick) {
+            this._onCallClickFuncs.push(onCallClick);
+        }
+        this._enabled = enabled;
         this._countryCode = countryCode;
         this._bubblePhoneNumber = bubbleInIframe && window !== window.parent;
         this._elemObserver = null;
         this._c2dMenuEl = null;
         this._c2dNumberHover = false;
         this._currentNumber = null;
-        this._initObserver();
-        this._injectC2DMenu();
+        if (this._enabled) {
+            this.start();
+        }
         if (bubbleInIframe) {
             this._initIframeBubblePhoneNumberListener();
         }
@@ -246,6 +254,16 @@ var ClickToDialInject = /** @class */ (function () {
         this._C2DMenuObserver.observe(document.body, { childList: true });
         var numberNodes = getAllNumberNodes(document.body);
         this._handlePhoneNumberNodes(numberNodes);
+    };
+    ClickToDialInject.prototype._stopObserver = function () {
+        if (this._elemObserver) {
+            this._elemObserver.disconnect();
+            this._elemObserver = null;
+        }
+        if (this._C2DMenuObserver) {
+            this._C2DMenuObserver.disconnect();
+            this._C2DMenuObserver = null;
+        }
     };
     ClickToDialInject.prototype._handlePhoneNumberNodes = function (nodes) {
         var _this = this;
@@ -327,10 +345,18 @@ var ClickToDialInject = /** @class */ (function () {
             return _this._onC2DMenuMouseLeave();
         });
         this._callBtn = this._c2dMenuEl.querySelector('.rc-widget-c2d-icon');
-        this._callBtn.addEventListener('click', function () { return _this.onCallClick(); });
+        this._callBtn.addEventListener('click', function () { return _this._onCallClick(); });
         this._smsBtn = this._c2dMenuEl.querySelector('.rc-widget-c2sms-icon');
-        this._smsBtn.addEventListener('click', function () { return _this.onSmsClick(); });
+        this._smsBtn.addEventListener('click', function () { return _this._onSmsClick(); });
         document.body.appendChild(this._c2dMenuEl);
+    };
+    ClickToDialInject.prototype._cleanC2DMenu = function () {
+        if (this._c2dMenuEl) {
+            this._callBtn = null;
+            this._smsBtn = null;
+            this._c2dMenuEl.remove();
+            this._c2dMenuEl = null;
+        }
     };
     ClickToDialInject.prototype._onC2DMenuMouseEnter = function () {
         this._c2dMenuHover = true;
@@ -347,19 +373,31 @@ var ClickToDialInject = /** @class */ (function () {
         }
         this._c2dMenuEl.style.display = 'none';
     };
-    ClickToDialInject.prototype.onCallClick = function () {
+    ClickToDialInject.prototype._onCallClick = function () {
+        var _this = this;
         if (this._bubblePhoneNumber) {
             this._postPhoneNumberToTop(this._currentNumber, 'Call');
             return;
         }
-        this._onCallClick(this._currentNumber);
+        this._onCallClickFuncs.forEach(function (func) {
+            func(_this._currentNumber);
+        });
     };
-    ClickToDialInject.prototype.onSmsClick = function () {
+    ClickToDialInject.prototype._onSmsClick = function () {
+        var _this = this;
         if (this._bubblePhoneNumber) {
             this._postPhoneNumberToTop(this._currentNumber, 'SMS');
             return;
         }
-        this._onSmsClick(this._currentNumber);
+        this._onSmsClickFuncs.forEach(function (func) {
+            func(_this._currentNumber);
+        });
+    };
+    ClickToDialInject.prototype.onCallClick = function (func) {
+        this._onCallClickFuncs.push(func);
+    };
+    ClickToDialInject.prototype.onSmsClick = function (func) {
+        this._onSmsClickFuncs.push(func);
     };
     ClickToDialInject.prototype._initIframeBubblePhoneNumberListener = function () {
         var _this = this;
@@ -370,11 +408,11 @@ var ClickToDialInject = /** @class */ (function () {
             }
             _this._currentNumber = message.phoneNumber;
             if (message.eventType === 'Call') {
-                _this.onCallClick();
+                _this._onCallClick();
                 return;
             }
             if (message.eventType === 'SMS') {
-                _this.onSmsClick();
+                _this._onSmsClick();
             }
         });
     };
@@ -384,6 +422,16 @@ var ClickToDialInject = /** @class */ (function () {
             eventType: type,
             phoneNumber: phoneNumber,
         }, '*');
+    };
+    ClickToDialInject.prototype.dispose = function () {
+        this._enabled = false;
+        this._stopObserver();
+        this._cleanC2DMenu();
+    };
+    ClickToDialInject.prototype.start = function () {
+        this._enabled = true;
+        this._initObserver();
+        this._injectC2DMenu();
     };
     return ClickToDialInject;
 }());
