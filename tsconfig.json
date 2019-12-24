@@ -5,8 +5,18 @@
       "es6",
       "dom"
     ],
-    "sourceMap": true
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "declaration": true,
+    "resolveJsonModule": true,
+    "types" : [],
+    "noImplicitAny": false
   },
-  "files": ["src/index.ts"],
+  "include": ["index.ts", "lib", "matchers", "observers"],
+  "exclude": [
+    "node_modules",
+    "**/*.test.ts"
+  ],
   "compileOnSave": true
 }
