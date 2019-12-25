@@ -1,39 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta http-equiv="cache-control" content="max-age=0" />
-  <meta http-equiv="cache-control" content="no-cache" />
-  <meta http-equiv="expires" content="0" />
-  <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
-  <meta http-equiv="pragma" content="no-cache" />
-  <!-- Force Edge to stop detecting phone numbers -->
-  <meta name="format-detection" content="telephone=no">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta charset="UTF-8">
-  <title>Demo</title>
-  <link href="../build/styles.css" rel="stylesheet">
-</head>
-<body>
-<p>Click to SMS: <a href="sms:+1234567890">+1234567890</a></p>
-<p>Click to Call: <a href="tel:+1234567888">+1234567888</a></p>
-<p>+12345678900</p>
-<p>+12345678901</p>
-<p>+1-2345-678-901</p>
-<p><input type="text" name="number" value="+12345678901" /></p>
-<script src="https://unpkg.com/libphonenumber-js@1.7.7/bundle/libphonenumber-min.js"></script>
-<script src="../build/index.js"></script>
-<script>
-  window.clickToDialInject = new RingCentralC2DInject({
-    onCallClick: function (phoneNumber) {
-      console.log('Click To Dial:', phoneNumber);
-      alert('Click To Dial:' + phoneNumber);
-    },
-    onSmsClick: function (phoneNumber) {
-      console.log('Click To SMS:', phoneNumber);
-      alert('Click To SMS:' + phoneNumber);
-    }
-  })
-</script>
-<iframe src="./iframe.html"></iframe>
-</body>
+  <head>
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <!-- Force Edge to stop detecting phone numbers -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8" />
+    <title>Demo</title>
+  </head>
+  <body>
+    <p>Anchor tel: <a href="tel:+12345678902">Call number</a></p>
+    <p>
+      Anchor sms:
+      <a href="sms:+12345678901" style="display: block; margin-right: 100px; border: 50px;">
+        SMS number
+        <span style="display: block; margin-left: 50px;">spliter with margins</span>
+      </a>
+    </p>
+    <p>Meeting link should be skipped<br/>https://meetings.ringcentral.com/j/1234567890 +12345678903 abc</p>
+    <p>abc +12345678904 abc +12345678905 abc</p>
+    <p>+12345678906</p>
+    <p>+1-2345-678-907</p>
+    <p>(213) 373-4253 ext. 1234</p>
+    <p><input type="text" name="number" value="+1-2345-678-907" /></p>
+    <p><span class="st">... 8572135824 8572135825 8572135826 8572135827 8572135828 8572135829 8572135830 8572135831 <em>8572135832</em> 8572135833 8572135834<wbr>&nbsp;...</span></p>
+    <script src="../build/index.js"></script>
+    <script>
+      window.clickToDialInject = new RingCentralC2D();
+      window.clickToDialInject.on(
+        RingCentralC2D.events.call,
+        function(phoneNumber) {
+          console.log('Click To Dial:', phoneNumber);
+          // alert('Click To Dial:' + phoneNumber);
+        },
+      );
+      window.clickToDialInject.on(
+        RingCentralC2D.events.text,
+        function(phoneNumber) {
+          console.log('Click To SMS:', phoneNumber);
+          // alert('Click To SMS:' + phoneNumber);
+        },
+      );
+    </script>
+    <iframe src="./iframe.html"></iframe>
+  </body>
 </html>

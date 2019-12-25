@@ -13,53 +13,48 @@ This library can help you to get phone numbers in web page and show a RingCentra
 via npm
 
 ```
-npm install ringcentral-c2d libphonenumber-js
+npm install ringcentral-c2d
 ```
 
 via yarn
 
 ```
-yarn add ringcentral-c2d libphonenumber-js
+yarn add ringcentral-c2d
 ```
 
 ## Use
 
 ### With webpack:
 
-```
-import RingCentralC2DInject from 'ringcentral-c2d';
-import 'ringcentral-c2d/build/styles.css';
+```javascript
+import { RingCentralC2D, C2DEvents } from 'ringcentral-c2d'; // require url-loader, sass-loader, css-loader
 
-var clickToDialInject = new RingCentralC2DInject({
-  onCallClick: (phoneNumber) => {
-    console.log('Click To Dial:', phoneNumber);
-  },
-  onSmsClick: (phoneNumber) => {
-    console.log('Click To SMS:', phoneNumber);
-  }
-})
+var clickToDial = new RingCentralC2D();
+clickToDial.on(C2DEvents.call, (context) => {
+    console.log('Click To Dial:', context.phoneNumber);
+});
+clickToDial.on(C2DEvents.text, (context) => {
+    console.log('Click To SMS:', context.phoneNumber);
+});
 
 // Stop
-clickToDialInject.dispose();
+clickToDial.dispose();
 ```
 
 ### CDN
 
-```
-<link href="https://unpkg.com/ringcentral-c2d@0.0.3/build/styles.css" rel="stylesheet">
-<script src="https://unpkg.com/libphonenumber-js@1.7.7/bundle/libphonenumber-min.js"></script>
-<script src="https://unpkg.com/ringcentral-c2d@0.0.3/build/index.js"></script>
+```html
+<script src="https://unpkg.com/ringcentral-c2d@1.0.0/build/index.js"></script>
 <script>
-  var clickToDialInject = new RingCentralC2DInject({
-    onCallClick: function (phoneNumber) {
-      console.log('Click To Dial:', phoneNumber);
-    },
-    onSmsClick: function (phoneNumber) {
-      console.log('Click To SMS:', phoneNumber);
-    }
-  });
+    var clickToDial = new RingCentralC2D();
+    clickToDial.on(RingCentralC2D.events.call, function(context) {
+        console.log('Click To Dial:', context.phoneNumber);
+    });
+    clickToDial.on(RingCentralC2D.events.text, function(context) {
+        console.log('Click To SMS:', context.phoneNumber);
+    });
 
-  // Stop
-  clickToDialInject.dispose();
+    // Stop
+    clickToDial.dispose();
 </script>
 ```
