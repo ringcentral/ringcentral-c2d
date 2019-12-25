@@ -30,11 +30,11 @@ yarn add ringcentral-c2d
 import { RingCentralC2D, C2DEvents } from 'ringcentral-c2d'; // require url-loader, sass-loader, css-loader
 
 var clickToDial = new RingCentralC2D();
-clickToDial.on(C2DEvents.call, (context) => {
-    console.log('Click To Dial:', context.phoneNumber);
+clickToDial.on(C2DEvents.call, (phoneNumber) => {
+    console.log('Click To Dial:', phoneNumber);
 });
-clickToDial.on(C2DEvents.text, (context) => {
-    console.log('Click To SMS:', context.phoneNumber);
+clickToDial.on(C2DEvents.text, (phoneNumber) => {
+    console.log('Click To SMS:', phoneNumber);
 });
 
 // Stop
@@ -47,11 +47,11 @@ clickToDial.dispose();
 <script src="https://unpkg.com/ringcentral-c2d@1.0.0/build/index.js"></script>
 <script>
     var clickToDial = new RingCentralC2D();
-    clickToDial.on(RingCentralC2D.events.call, function(context) {
-        console.log('Click To Dial:', context.phoneNumber);
+    clickToDial.on(RingCentralC2D.events.call, function(phoneNumber) {
+        console.log('Click To Dial:', phoneNumber);
     });
-    clickToDial.on(RingCentralC2D.events.text, function(context) {
-        console.log('Click To SMS:', context.phoneNumber);
+    clickToDial.on(RingCentralC2D.events.text, function(phoneNumber) {
+        console.log('Click To SMS:', phoneNumber);
     });
 
     // Stop
