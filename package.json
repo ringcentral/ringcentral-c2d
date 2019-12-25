@@ -7,9 +7,9 @@
   "types": "index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ringcentral/ringcentral-js-widgets.git"
+    "url": "git+https://github.com/ringcentral/ringcentral-c2d.git"
   },
-  "homepage": "https://github.com/ringcentral/ringcentral-js-widgets/tree/master/packages/ringcentral-c2d#readme",
+  "homepage": "https://github.com/ringcentral/ringcentral-c2d#readme",
   "license": "MIT",
   "author": "RingCentral Integrations Team",
   "scripts": {
@@ -38,13 +38,13 @@
     "typescript": "^3.7.3",
     "url-loader": "^1.1.2",
     "webpack": "^4.29.0",
-    "webpack-cli": "^3.2.1"
+    "webpack-cli": "^3.3.10"
   },
   "dependencies": {
     "@ringcentral-integration/phone-number": "^1.0.4",
     "classnames": "^2.2.5",
-    "ramda": "^0.26.1",
-    "core-js": "^2.6.5"
+    "core-js": "^2.6.5",
+    "ramda": "^0.26.1"
   },
   "jest": {
     "moduleNameMapper": {

@@ -24,6 +24,10 @@ function copyBuildFiles() {
 
 async function copyOtherFiles() {
   await fs.copy(
+    path.resolve(__dirname, 'README.md'),
+    path.resolve(__dirname, 'dist/README.md'),
+  );
+  await fs.copy(
     path.resolve(__dirname, 'lib/themes/theme.scss'),
     path.resolve(__dirname, 'dist/lib/themes/theme.scss'),
   );
