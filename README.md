@@ -27,7 +27,7 @@ yarn add ringcentral-c2d
 ### With webpack:
 
 ```javascript
-import { RingCentralC2D, C2DEvents } from 'ringcentral-c2d'; // require url-loader, sass-loader, css-loader
+import { RingCentralC2D, C2DEvents } from 'ringcentral-c2d'; // require url-loader, sass-loader, css-loader, style-loader
 
 var clickToDial = new RingCentralC2D();
 clickToDial.on(C2DEvents.call, (phoneNumber) => {
@@ -39,6 +39,43 @@ clickToDial.on(C2DEvents.text, (phoneNumber) => {
 
 // Stop
 clickToDial.dispose();
+```
+
+** Notice **: It requires `style-loader`, `css-loader`, `sass-loader` and `url-loader`
+
+```
+yarn add style-loader css-loader sass-loader node-sass url-loader --dev
+```
+
+Webpack config for loadding style file:
+
+```
+// Add following into webpack config.module.rules
+{
+  test: /\.sass|\.scss/,
+  use: [
+    {
+      loader: 'style-loader',
+    },
+    {
+      loader: 'css-loader',
+      options: {
+        modules: {
+          localIdentName: `[path]_[name]_[local]_[hash:base64:5]`,
+        },
+      },
+    },
+    {
+      loader: 'sass-loader',
+      options: {
+        sassOptions: {
+          includePaths: [path.resolve(__dirname, 'node_modules/ringcentral-c2d/lib/themes')], // path to load theme file
+          outputStyle: 'extended'
+        }
+      },
+    },
+  ],
+},
 ```
 
 ### CDN
