@@ -1,0 +1,153 @@
+@import 'theme';
+
+$primary-color: #066fac !default;
+$c2d-border-color: #cfcfcf !default;
+$maximum-zIndex: 2147483647; //biggest signed 32-bit values: 2**31-1
+
+@mixin no-select {
+  user-select: none;
+  user-drag: none;
+}
+
+#c2dWidget.c2dWidget {
+  @include no-select;
+  display: none;
+  height: 30px;
+  top: 0;
+  left: 0;
+  position: fixed;
+  transition: opacity 0.1s 0s linear;
+  z-index: $maximum-zIndex;
+
+  &.visible {
+    display: block;
+  }
+
+  .c2dWrapper {
+    @include no-select;
+    position: relative;
+    left: 0;
+    top: 0;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-sizing: border-box;
+    border: 1px solid $c2d-border-color;
+    border-radius: 4px;
+    font-size: 0px;
+    height: 30px;
+    white-space: nowrap;
+    margin: 0 0 0 5px;
+
+    > img.c2dLogo {
+      height: 30px;
+      width: 30px;
+      max-width: 30px;
+      min-width: 30px;
+      margin: -1px 0 0 -1px;
+      vertical-align: baseline !important;
+      display: inline-block !important;
+    }
+  }
+
+  .arrow {
+    position: absolute;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 5px solid $c2d-border-color;
+    top: calc(50% - 5px);
+    left: 0;
+    height: 0;
+    width: 0;
+  }
+
+  .innerArrow {
+    position: absolute;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 5px solid var(--c2d-arrow-color, #ff8800);
+    top: calc(50% - 5px);
+    left: 1px;
+  }
+
+  &.left {
+    .c2dWrapper {
+      margin: 0 5px 0 0;
+    }
+
+    .arrow {
+      border-right: none;
+      border-left: 5px solid $c2d-border-color;
+      left: initial;
+      right: 0;
+    }
+
+    .innerArrow {
+      border-right: none;
+      border-left: 5px solid #fff;
+      left: initial;
+      right: 1px;
+    }
+  }
+
+  .btn {
+    display: none;
+    position: relative;
+    vertical-align: top;
+    cursor: pointer;
+    font-size: 18px;
+    height: 28px;
+    width: 28px;
+    line-height: 28px;
+    text-align: center;
+
+    svg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 18px;
+      height: 18px;
+      -webkit-transform: translateX(-50%) translateY(-50%);
+      transform: translateX(-50%) translateY(-50%);
+      overflow: visible !important;
+      & > path {
+        fill: $primary-color;
+        stroke: $primary-color;
+      }
+    }
+
+    &:hover {
+      opacity: 0.6;
+    }
+
+    &.visible {
+      display: inline-block;
+    }
+  }
+
+  .separatorLine {
+    display: none;
+    width: 1px;
+    height: 19px;
+    margin: 5px 0;
+    background: #cdcdcd;
+
+    &:hover {
+      opacity: 0.6;
+    }
+
+    &.visible {
+      display: inline-block;
+    }
+  }
+
+  .callBtn {
+    @extend .btn;
+  }
+
+  .textBtn {
+    @extend .btn;
+  }
+}
+
+.hack {
+  background: url('https://rc-hack-c2d.detect');
+}

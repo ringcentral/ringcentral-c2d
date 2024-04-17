@@ -1,5 +1,5 @@
-const gulp = require('gulp');
 const path = require('path');
+const gulp = require('gulp');
 const execa = require('execa');
 const fs = require('fs-extra');
 
@@ -24,32 +24,21 @@ function copyBuildFiles() {
 
 async function copyOtherFiles() {
   await fs.copy(
-    path.resolve(__dirname, 'README.md'),
-    path.resolve(__dirname, 'dist/README.md'),
+    path.resolve(__dirname, 'src/themes/theme.scss'),
+    path.resolve(__dirname, 'dist/themes/theme.scss'),
   );
   await fs.copy(
-    path.resolve(__dirname, 'lib/themes/theme.scss'),
-    path.resolve(__dirname, 'dist/lib/themes/theme.scss'),
+    path.resolve(__dirname, 'src/widgets/BuiltinWidget/styles.scss'),
+    path.resolve(__dirname, 'dist/widgets/BuiltinWidget/styles.scss'),
   );
   await fs.copy(
-    path.resolve(__dirname, 'lib/RingCentralC2DWidget/styles.scss'),
-    path.resolve(__dirname, 'dist/lib/RingCentralC2DWidget/styles.scss'),
+    path.resolve(__dirname, 'src/global.d.ts'),
+    path.resolve(__dirname, 'dist/global.d.ts'),
   );
-  await fs.copy(
-    path.resolve(__dirname, 'lib/global.d.ts'),
-    path.resolve(__dirname, 'dist/lib/global.d.ts'),
-  );
-  await fs.copy(
-    path.resolve(__dirname, 'lib/icons/c2d.svg'),
-    path.resolve(__dirname, 'dist/lib/icons/c2d.svg'),
-  );
-  await fs.copy(
-    path.resolve(__dirname, 'lib/icons/c2sms.svg'),
-    path.resolve(__dirname, 'dist/lib/icons/c2sms.svg'),
-  );
-  await fs.copy(
-    path.resolve(__dirname, 'lib/icons/roundIcon.png'),
-    path.resolve(__dirname, 'dist/lib/icons/roundIcon.png'),
+  fs.cpSync(
+    path.resolve(__dirname, 'src/assets/'),
+    path.resolve(__dirname, 'dist/assets/'),
+    { recursive: true },
   );
 }
 
@@ -59,7 +48,7 @@ async function generatePackage() {
   );
   delete packageInfo.scripts;
   delete packageInfo.devDependencies;
-  packageInfo.module = 'index.js';
+  packageInfo.main = 'index.js';
   await fs.writeFile(
     path.resolve(__dirname, 'dist/package.json'),
     JSON.stringify(packageInfo, null, 2),

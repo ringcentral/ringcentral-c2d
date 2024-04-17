@@ -1,8 +1,9 @@
+// TODO: final test
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 
 module.exports = {
-  entry: './index.ts',
+  entry: './src/index.ts',
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'build'),
@@ -13,9 +14,9 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
   },
-  // optimization: {
-  //   minimize: false,
-  // },
+  optimization: {
+    minimize: false,
+  },
   mode: 'production',
   module: {
     rules: [
@@ -41,21 +42,26 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
-              localIdentName: `[path]_[name]_[local]_[hash:base64:5]`,
+              modules: {
+                localIdentName: `[path]_[name]_[local]_[hash:base64:5]`,
+              },
             },
           },
           {
             loader: 'postcss-loader',
             options: {
-              plugins: () => [autoprefixer],
+              postcssOptions: {
+                plugins: () => [autoprefixer],
+              },
             },
           },
           {
             loader: 'sass-loader',
             options: {
-              includePaths: [path.resolve(__dirname, 'lib/themes')],
-              outputStyle: 'expanded',
+              sassOptions: {
+                includePaths: [path.resolve(__dirname, 'src/themes')],
+                outputStyle: 'expanded',
+              },
             },
           },
         ],
