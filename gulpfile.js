@@ -35,6 +35,10 @@ async function copyOtherFiles() {
     path.resolve(__dirname, 'src/global.d.ts'),
     path.resolve(__dirname, 'dist/global.d.ts'),
   );
+  await fs.copy(
+    path.resolve(__dirname, 'README.md'),
+    path.resolve(__dirname, 'dist/README.md'),
+  );
   fs.cpSync(
     path.resolve(__dirname, 'src/assets/'),
     path.resolve(__dirname, 'dist/assets/'),

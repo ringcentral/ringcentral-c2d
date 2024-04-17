@@ -25,9 +25,9 @@ yarn add ringcentral-c2d
 ## Overview
 
 This library mainly contains 3 parts
-1. matchers - For matching phone numbers in the provided page content
-2. observers - For watching any DOM changes of the page
-3. widgets - For injecting UI widgets for user to interact with
+1. Matchers - For matching phone numbers in the provided page content
+2. Observers - For watching any DOM changes of the page
+3. Widgets - For injecting UI widgets for user to interact with
 
 
 ## Use
