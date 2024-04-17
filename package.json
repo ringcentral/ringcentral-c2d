@@ -1,63 +1,57 @@
 {
   "name": "ringcentral-c2d",
-  "version": "1.0.0",
-  "description": "RingCentral ClickToDial and RingCentral ClickToSMS library",
-  "main": "build/index.js",
-  "module": "index.ts",
-  "types": "index.d.ts",
+  "version": "2.0.0",
+  "description": "RingCentral Click-to-Call and Click-to-Text library",
+  "homepage": "https://github.com/ringcentral/ringcentral-js-widgets/tree/master/packages/ringcentral-c2d#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ringcentral/ringcentral-c2d.git"
+    "url": "git+https://github.com/ringcentral/ringcentral-js-widgets.git"
   },
-  "homepage": "https://github.com/ringcentral/ringcentral-c2d#readme",
   "license": "MIT",
   "author": "RingCentral Integrations Team",
+  "sideEffects": false,
+  "main": "src/index.ts",
   "scripts": {
-    "tsc": "tsc",
     "build": "webpack",
     "pre-release": "gulp release",
-    "test": "jest --no-cache --detectOpenHandles --verbose"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.7.7",
-    "@babel/preset-env": "^7.7.7",
-    "@babel/preset-typescript": "^7.7.7",
-    "autoprefixer": "^9.6.1",
-    "css-loader": "^2.1.1",
-    "execa": "^1.0.0",
-    "fs-extra": "^7.0.1",
-    "gulp": "^4.0.2",
-    "jest": "^24.8.0",
-    "jest-junit": "^6.3.0",
-    "node-sass": "^4.12.0",
-    "postcss-loader": "^3.0.0",
-    "sass-loader": "^7.1.0",
-    "style-loader": "^0.23.1",
-    "ts-loader": "^5.3.3",
-    "tslint": "^5.12.1",
-    "typescript": "^3.7.3",
-    "url-loader": "^1.1.2",
-    "webpack": "^4.29.0",
-    "webpack-cli": "^3.3.10"
+    "test": "yarn run-test",
+    "tsc-check": "yarn tsc --project tsconfig.lint.json --noEmit",
+    "tsc": "tsc"
   },
   "dependencies": {
-    "@ringcentral-integration/phone-number": "^1.0.4",
+    "@ringcentral-integration/phone-number": "^1.1.0",
     "classnames": "^2.2.5",
-    "core-js": "^2.6.5",
-    "ramda": "^0.26.1"
+    "lodash": "^4.17.21"
   },
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/__mocks__/fileMock.js",
-      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
-    },
-    "transform": {
-      "^.+\\.(t|j)sx?$": "./jestTransform.js"
-    },
-    "reporters": [
-      "default",
-      "jest-junit"
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "babel-jest": "^29.7.0",
+    "core-js": "^3.9.1",
+    "css-loader": "^6.8.1",
+    "execa": "^5.0.0",
+    "fs-extra": "^10.1.0",
+    "gulp": "^4.0.2",
+    "jest": "^29.7.0",
+    "jest-junit": "^16.0.0",
+    "postcss": "^8.4.38",
+    "postcss-loader": "7.3.4",
+    "sass": "^1.75.0",
+    "sass-loader": "^13.3.3",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^5.3.3",
+    "tslib": "^2.3.0",
+    "typescript": "^4.9.4",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "common": true,
+  "ci": {
+    "ringcentral-c2d": "**"
+  },
+  "nx": {
+    "tags": [
+      "scope:ci-group-1"
     ]
-  },
-  "sideEffects": false
+  }
 }

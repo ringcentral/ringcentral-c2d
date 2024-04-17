@@ -1,0 +1,1 @@
+export const RC_C2D_NUMBER_TAGNAME = 'RC-C2D-NUMBER';

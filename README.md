@@ -2,7 +2,7 @@
 
 [![NPM Version](https://img.shields.io/npm/v/ringcentral-c2d.svg?style=flat-square)](https://www.npmjs.com/package/ringcentral-c2d)
 
-This library can help you to get phone numbers in web page and show a RingCentral Click to Dial and Click to SMS shortcut when hover on phone number text.
+This library can help you to get phone numbers in web page and show a RingCentral Click-to-Call and Click-to-Text shortcut when hover on phone number text.
 
 ![clicktodial](https://user-images.githubusercontent.com/7036536/51652788-d2627200-1fcb-11e9-8ba3-9e50baeaf8a6.png)
 
@@ -22,73 +22,50 @@ via yarn
 yarn add ringcentral-c2d
 ```
 
+## Overview
+
+This library mainly contains 3 parts
+1. matchers - For matching phone numbers in the provided page content
+2. observers - For watching any DOM changes of the page
+3. widgets - For injecting UI widgets for user to interact with
+
+
 ## Use
 
 ### With webpack:
 
+[webpack.config.js](./webpack.config.js)
+
 ```javascript
-import { RingCentralC2D, C2DEvents } from 'ringcentral-c2d'; // require url-loader, sass-loader, css-loader, style-loader
+import { RingCentralC2D, WidgetEvents } from 'ringcentral-c2d'; // require url-loader, sass-loader, css-loader
 
 var clickToDial = new RingCentralC2D();
-clickToDial.on(C2DEvents.call, (phoneNumber) => {
-    console.log('Click To Dial:', phoneNumber);
+
+clickToDial.widget.on(WidgetEvents.call, (context) => {
+    console.log('Click to Call:', context.phoneNumber);
 });
-clickToDial.on(C2DEvents.text, (phoneNumber) => {
-    console.log('Click To SMS:', phoneNumber);
+
+clickToDial.widget.on(WidgetEvents.text, (context) => {
+    console.log('Click to Text:', context.phoneNumber);
 });
 
 // Stop
 clickToDial.dispose();
 ```
 
-** Notice **: It requires `style-loader`, `css-loader`, `sass-loader` and `url-loader`
-
-```
-yarn add style-loader css-loader sass-loader node-sass url-loader --dev
-```
-
-Webpack config for loadding style file:
-
-```
-// Add following into webpack config.module.rules
-{
-  test: /\.sass|\.scss/,
-  use: [
-    {
-      loader: 'style-loader',
-    },
-    {
-      loader: 'css-loader',
-      options: {
-        modules: {
-          localIdentName: `[path]_[name]_[local]_[hash:base64:5]`,
-        },
-      },
-    },
-    {
-      loader: 'sass-loader',
-      options: {
-        sassOptions: {
-          includePaths: [path.resolve(__dirname, 'node_modules/ringcentral-c2d/lib/themes')], // path to load theme file
-          outputStyle: 'extended'
-        }
-      },
-    },
-  ],
-},
-```
-
 ### CDN
 
 ```html
-<script src="https://unpkg.com/ringcentral-c2d@1.0.0/build/index.js"></script>
+<script src="https://unpkg.com/ringcentral-c2d@2.0.0/build/index.js"></script>
 <script>
     var clickToDial = new RingCentralC2D();
-    clickToDial.on(RingCentralC2D.events.call, function(phoneNumber) {
-        console.log('Click To Dial:', phoneNumber);
+
+    clickToDial.widget.on('call', function (context) {
+        console.log('Click to Call:', context.phoneNumber);
     });
-    clickToDial.on(RingCentralC2D.events.text, function(phoneNumber) {
-        console.log('Click To SMS:', phoneNumber);
+
+    clickToDial.widget.on('text', function (context) {
+        console.log('Click to Text:', context.phoneNumber);
     });
 
     // Stop

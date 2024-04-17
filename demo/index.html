@@ -14,6 +14,7 @@
   </head>
   <body>
     <p>Anchor tel: <a href="tel:+12345678902">Call number</a></p>
+    <p>Encoded anchor tel: <a href="tel:%28917%29%20414-8783">Call number</a></p>
     <p>
       Anchor sms:
       <a href="sms:+12345678901" style="display: block; margin-right: 100px; border: 50px;">
@@ -21,30 +22,29 @@
         <span style="display: block; margin-left: 50px;">spliter with margins</span>
       </a>
     </p>
-    <p>Meeting link should be skipped<br/>https://meetings.ringcentral.com/j/1234567890 +12345678903 abc</p>
+    <p style="pointer-events: none;">pointer-events:none; +12345678901</p>
+    <p>Meeting link should be skipped<br/>https://meetings.ringcentral.com/j/1482652822 +12345678903 abc</p>
     <p>abc +12345678904 abc +12345678905 abc</p>
     <p>+12345678906</p>
     <p>+1-2345-678-907</p>
     <p>(213) 373-4253 ext. 1234</p>
-    <p><input type="text" name="number" value="+1-2345-678-907" /></p>
+    <p>
+      <input type="text" name="number" value="+12345678908" /><br>
+      <span>Elements (input/select/textarea) are disabled by default.</span><br>
+      <span>For test, turn on the `includeValueNodes` toggle in "ringcentral-js-widgets/ringcentral-c2d/src/matchers/LibPhoneNumberMatcher/processNode.ts"</span>
+    </p>
     <p><span class="st">... 8572135824 8572135825 8572135826 8572135827 8572135828 8572135829 8572135830 8572135831 <em>8572135832</em> 8572135833 8572135834<wbr>&nbsp;...</span></p>
     <script src="../build/index.js"></script>
     <script>
-      window.clickToDialInject = new RingCentralC2D();
-      window.clickToDialInject.on(
-        RingCentralC2D.events.call,
-        function(phoneNumber) {
-          console.log('Click To Dial:', phoneNumber);
-          // alert('Click To Dial:' + phoneNumber);
-        },
-      );
-      window.clickToDialInject.on(
-        RingCentralC2D.events.text,
-        function(phoneNumber) {
-          console.log('Click To SMS:', phoneNumber);
-          // alert('Click To SMS:' + phoneNumber);
-        },
-      );
+      var clickToDial = new RingCentralC2D();
+      clickToDial.widget.on('call', function (phoneNumber) {
+        console.log('Click to Call:', phoneNumber);
+        // alert('Click to Call:' + phoneNumber);
+      });
+      clickToDial.widget.on('text', function (phoneNumber) {
+        console.log('Click to Text:', phoneNumber);
+        // alert('Click to Text:' + phoneNumber);
+      });
     </script>
     <iframe src="./iframe.html"></iframe>
   </body>
