@@ -2,12 +2,12 @@ import { isContentEditable } from '../utilities';
 
 import { SingleNodeMatch } from './SingleNodeMatch';
 
-const EVENTS = {
-  focus: 'focus',
-  blur: 'blur',
-  change: 'change',
-  dispose: 'dispose',
-};
+enum EVENTS {
+  focus = 'focus',
+  blur = 'blur',
+  change = 'change',
+  dispose = 'dispose',
+}
 
 let _lastFocused: ValueNodeMatch | undefined;
 
@@ -26,7 +26,9 @@ export class ValueNodeMatch<
 > extends SingleNodeMatch {
   private _monitorId?: number;
 
-  events = EVENTS;
+  get events() {
+    return EVENTS;
+  }
 
   constructor(private _matchProps: ValueNodeMatchProps<IDataContext>) {
     super(_matchProps.node);

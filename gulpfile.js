@@ -3,6 +3,11 @@ const gulp = require('gulp');
 const execa = require('execa');
 const fs = require('fs-extra');
 
+async function cleanOutput() {
+  await fs.emptyDir(path.resolve(__dirname, 'build'));
+  await fs.emptyDir(path.resolve(__dirname, 'dist'));
+}
+
 function runTSBuild() {
   return execa('yarn', ['tsc'], {
     stdio: 'inherit',
@@ -60,6 +65,7 @@ async function generatePackage() {
 }
 
 gulp.task('release', async () => {
+  await cleanOutput();
   await runWebpack();
   await runTSBuild();
   await copyBuildFiles();

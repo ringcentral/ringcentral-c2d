@@ -24,7 +24,7 @@ import {
 import { BuiltinWidgetEvents } from './BuiltinWidgetEvents';
 import styles from './styles.scss';
 
-const RC_C2D_WIDGET_TAGNAME = 'RC-C2D-WIDGET';
+const C2D_WIDGET_TAGNAME = 'RC-C2D-WIDGET';
 const c2dArrowColorVarName = '--c2d-arrow-color';
 const c2callIcon = convertToInline(c2callIconData);
 const c2textIcon = convertToInline(c2textIconData);
@@ -55,30 +55,14 @@ function getFullPhoneNumber(matchContext: MatchContextModel) {
 }
 
 export class BuiltinWidget extends BaseWidget implements IWidget {
-  _logoIcon = this._props.logoIcon || defaultLogo;
-  _arrowColor = '#ff8800';
-
-  get _autoHide() {
-    return !!this._props.autoHide;
-  }
-
-  get _styles() {
-    return this._props.styles;
-  }
-
-  get events() {
-    return BuiltinWidgetEvents;
-  }
-
-  _enableC2Call = true;
-  _enableC2Text = true;
-
   _rootEl?: HTMLElement;
   _logoEl?: HTMLImageElement;
   _callBtn?: HTMLElement;
   _textBtn?: HTMLElement;
   _separatorLine?: HTMLElement;
 
+  _enableC2Call = true;
+  _enableC2Text = true;
   _callBtnTitle = defaultCallBtnTitle;
   _textBtnTitle = defaultTextBtnTitle;
 
@@ -87,9 +71,12 @@ export class BuiltinWidget extends BaseWidget implements IWidget {
   _numberHovering = false;
   _currentTargetItem?: TargetItem;
 
-  _cancelNumberHover = debounce(() => {
-    this.setTarget(undefined);
-  }, defaultCancelHoverTime);
+  _logoIcon = this._props.logoIcon || defaultLogo;
+  _arrowColor = '#ff8800';
+
+  get events() {
+    return BuiltinWidgetEvents;
+  }
 
   constructor(protected _props: BuiltinWidgetProps = {}) {
     super({ bubbleInIframe: true });
@@ -99,16 +86,20 @@ export class BuiltinWidget extends BaseWidget implements IWidget {
   setTarget(item?: TargetItem) {
     this._numberHovering = !!item;
     this._renderClasses();
-    if (this._autoHide && item) {
+    if (this._props.autoHide && item) {
       this._cancelNumberHover();
     }
     if (item) {
       this._currentTargetItem = item;
-      this._showAt(item.rect);
+      this._updatePosition(item.rect);
     }
   }
 
-  _showAt(rect: MatchRect) {
+  _cancelNumberHover = debounce(() => {
+    this.setTarget(undefined);
+  }, defaultCancelHoverTime);
+
+  _updatePosition(rect: MatchRect) {
     const rootEl = this._rootEl;
     if (rect && rootEl) {
       const leftHandSide = window.innerWidth - rect.right < 90;
@@ -206,11 +197,11 @@ export class BuiltinWidget extends BaseWidget implements IWidget {
     this._fireEvent(BuiltinWidgetEvents.text);
   };
 
-  _fireEvent(event: BuiltinWidgetEvents) {
+  _fireEvent(eventName: BuiltinWidgetEvents) {
     const phoneNumber = this._currentTargetItem
       ? getFullPhoneNumber(this._currentTargetItem.context!)
       : '';
-    this.emit(event, phoneNumber, this._currentTargetItem?.context);
+    this.emit(eventName, phoneNumber, this._currentTargetItem?.context);
   }
 
   _injectDOM() {
@@ -225,9 +216,9 @@ export class BuiltinWidget extends BaseWidget implements IWidget {
       textButton = '',
       separatorLine = '',
       arrow = '',
-    } = this._styles || {};
+    } = this._props.styles || {};
 
-    this._rootEl = document.createElement(RC_C2D_WIDGET_TAGNAME);
+    this._rootEl = document.createElement(C2D_WIDGET_TAGNAME);
     this._rootEl.id = styles.c2dWidget;
     this._rootEl.style.cssText = root;
     this._rootEl.innerHTML = `
@@ -292,54 +283,44 @@ export class BuiltinWidget extends BaseWidget implements IWidget {
   }
 
   _renderTitles() {
-    if (this._callBtn) {
-      this._callBtn.setAttribute('title', this._callBtnTitle);
-    }
-    if (this._textBtn) {
-      this._textBtn.setAttribute('title', this._textBtnTitle);
-    }
+    this._callBtn?.setAttribute('title', this._callBtnTitle);
+    this._textBtn?.setAttribute('title', this._textBtnTitle);
   }
 
   _renderClasses() {
-    if (this._rootEl) {
-      this._rootEl.setAttribute(
-        'class',
-        classnames(styles.c2dWidget, this._leftHandSide && styles.left, {
-          [styles.visible]: this._widgetHovering || this._numberHovering,
-        }),
-      );
-      this._callBtn?.setAttribute(
-        'class',
-        classnames(styles.callBtn, this._enableC2Call && styles.visible),
-      );
-      this._textBtn?.setAttribute(
-        'class',
-        classnames(styles.textBtn, this._enableC2Text && styles.visible),
-      );
-      this._separatorLine?.setAttribute(
-        'class',
-        classnames(
-          styles.separatorLine,
-          this._enableC2Call && this._enableC2Text && styles.visible,
-        ),
-      );
-    }
+    this._rootEl?.setAttribute(
+      'class',
+      classnames(styles.c2dWidget, this._leftHandSide && styles.left, {
+        [styles.visible]: this._widgetHovering || this._numberHovering,
+      }),
+    );
+    this._callBtn?.setAttribute(
+      'class',
+      classnames(styles.callBtn, this._enableC2Call && styles.visible),
+    );
+    this._textBtn?.setAttribute(
+      'class',
+      classnames(styles.textBtn, this._enableC2Text && styles.visible),
+    );
+    this._separatorLine?.setAttribute(
+      'class',
+      classnames(
+        styles.separatorLine,
+        this._enableC2Call && this._enableC2Text && styles.visible,
+      ),
+    );
   }
 
   _cleanDOM() {
-    if (this._rootEl) {
-      this._callBtn?.removeEventListener('click', this._onCallClick);
-      this._callBtn = undefined;
-      this._textBtn?.removeEventListener('click', this._onTextClick);
-      this._textBtn = undefined;
-      this._rootEl.removeEventListener('mouseenter', this._onHoverInWidget);
-      this._rootEl.removeEventListener('mouseleave', this._onHoverOutWidget);
-      this._rootEl.removeEventListener('click', preventDefault);
-      this._rootEl.remove();
-      this._rootEl = undefined;
-    }
-    if (styleEl) {
-      styleEl.remove();
-    }
+    this._callBtn?.removeEventListener('click', this._onCallClick);
+    this._callBtn = undefined;
+    this._textBtn?.removeEventListener('click', this._onTextClick);
+    this._textBtn = undefined;
+    this._rootEl?.removeEventListener('mouseenter', this._onHoverInWidget);
+    this._rootEl?.removeEventListener('mouseleave', this._onHoverOutWidget);
+    this._rootEl?.removeEventListener('click', preventDefault);
+    this._rootEl?.remove();
+    this._rootEl = undefined;
+    styleEl?.remove();
   }
 }
