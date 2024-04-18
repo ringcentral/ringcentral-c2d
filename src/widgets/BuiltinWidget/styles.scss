@@ -1,13 +1,13 @@
 @import 'theme';
 
-$primary-color: #066fac !default;
-$c2d-border-color: #cfcfcf !default;
-$maximum-zIndex: 2147483647; //biggest signed 32-bit values: 2**31-1
-
 @mixin no-select {
   user-select: none;
   user-drag: none;
 }
+
+$primary-color: #066fac !default;
+$c2d-border-color: #cfcfcf !default;
+$maximum-zIndex: 2147483647; //biggest signed 32-bit values: 2**31-1
 
 #c2dWidget.c2dWidget {
   @include no-select;

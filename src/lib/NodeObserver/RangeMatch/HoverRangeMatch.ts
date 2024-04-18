@@ -23,7 +23,9 @@ export interface HoverRangeMatchProps<IDataContext>
 export class HoverRangeMatch<
   IDataContext = { [key: string]: any },
 > extends StartToEndMatch {
-  events = EVENTS;
+  get events() {
+    return EVENTS;
+  }
 
   constructor(private _matchProps: HoverRangeMatchProps<IDataContext>) {
     super(_matchProps);

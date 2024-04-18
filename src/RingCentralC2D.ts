@@ -1,3 +1,4 @@
+import { Emitter } from './lib';
 import {
   ObserverEvents,
   RangeObserver,
@@ -35,12 +36,12 @@ export class RingCentralC2D {
   }
 
   dispose() {
-    if (!this._observer.disposed) {
+    if (this._widget instanceof Emitter && !this._observer.disposed) {
       this._observer.off(ObserverEvents.hoverIn, this._onHoverIn);
       this._observer.off(ObserverEvents.hoverOut, this._onHoverOut);
       this._observer.dispose();
     }
-    if (!this._widget.disposed) {
+    if (this._widget instanceof Emitter && !this._widget.disposed) {
       this._widget.dispose();
     }
   }

@@ -1,6 +1,5 @@
 // TODO: final test
 const path = require('path');
-const autoprefixer = require('autoprefixer');
 
 module.exports = {
   entry: './src/index.ts',
@@ -26,14 +25,6 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
-        test: /\.png|\.svg/i,
-        use: 'url-loader',
-      },
-      {
         test: /\.sass|\.scss/,
         use: [
           {
@@ -48,14 +39,6 @@ module.exports = {
             },
           },
           {
-            loader: 'postcss-loader',
-            options: {
-              postcssOptions: {
-                plugins: () => [autoprefixer],
-              },
-            },
-          },
-          {
             loader: 'sass-loader',
             options: {
               sassOptions: {
@@ -65,6 +48,15 @@ module.exports = {
             },
           },
         ],
+      },
+      // https://webpack.js.org/guides/asset-modules/#replacing-inline-loader-syntax
+      {
+        resourceQuery: /raw/,
+        type: 'asset/source',
+      },
+      {
+        resourceQuery: /url/,
+        type: 'asset/inline',
       },
     ],
   },
