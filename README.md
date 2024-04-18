@@ -41,12 +41,12 @@ import { RingCentralC2D, WidgetEvents } from 'ringcentral-c2d'; // require url-l
 
 var clickToDial = new RingCentralC2D();
 
-clickToDial.widget.on(WidgetEvents.call, (context) => {
-    console.log('Click to Call:', context.phoneNumber);
+clickToDial.widget.on(WidgetEvents.call, (phoneNumber) => {
+    console.log('Click to Call:', phoneNumber);
 });
 
-clickToDial.widget.on(WidgetEvents.text, (context) => {
-    console.log('Click to Text:', context.phoneNumber);
+clickToDial.widget.on(WidgetEvents.text, (phoneNumber) => {
+    console.log('Click to Text:', phoneNumber);
 });
 
 // Stop
@@ -60,12 +60,12 @@ clickToDial.dispose();
 <script>
     var clickToDial = new RingCentralC2D();
 
-    clickToDial.widget.on('call', function (context) {
-        console.log('Click to Call:', context.phoneNumber);
+    clickToDial.widget.on('call', function (phoneNumber) {
+        console.log('Click to Call:', phoneNumber);
     });
 
-    clickToDial.widget.on('text', function (context) {
-        console.log('Click to Text:', context.phoneNumber);
+    clickToDial.widget.on('text', function (phoneNumber) {
+        console.log('Click to Text:', phoneNumber);
     });
 
     // Stop
