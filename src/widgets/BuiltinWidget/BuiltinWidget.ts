@@ -15,7 +15,7 @@ import { type MatchRect } from '../../lib/NodeObserver';
 import { convertToInline } from '../../lib/convertToInline';
 import type { MatchContextModel } from '../../matchers';
 import { BaseWidget } from '../BaseWidget';
-import { type TargetItem, type IWidget } from '../Widget.interface';
+import { type IWidget, type TargetItem } from '../Widget.interface';
 
 import {
   type BuiltinWidgetProps,
@@ -78,8 +78,12 @@ export class BuiltinWidget extends BaseWidget implements IWidget {
     return BuiltinWidgetEvents;
   }
 
-  constructor(protected _props: BuiltinWidgetProps = {}) {
-    super({ bubbleInIframe: true });
+  constructor(
+    protected _props: BuiltinWidgetProps = {
+      bubbleInIframe: true,
+    },
+  ) {
+    super(_props);
     this._injectDOM();
   }
 

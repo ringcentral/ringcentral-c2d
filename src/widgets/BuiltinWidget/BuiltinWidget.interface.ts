@@ -1,4 +1,6 @@
-export interface BuiltinWidgetProps {
+import type { BaseWidgetProps } from '../BaseWidget';
+
+export interface BuiltinWidgetProps extends BaseWidgetProps {
   logoIcon?: string;
   /** As an option to automatically hide the number text when it is hovered. */
   autoHide?: boolean;
