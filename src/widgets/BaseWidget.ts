@@ -1,8 +1,9 @@
 import { Emitter } from '../lib/Emitter';
 
-const BUBBLE_EVENTS_CHANNEL = 'rc-c2d-bubble-events';
+const BUBBLE_EVENTS_CHANNEL = 'c2d-bubble-events';
 
-interface BaseWidgetProps {
+export interface BaseWidgetProps {
+  prefix?: string;
   bubbleInIframe?: boolean;
 }
 
@@ -14,15 +15,16 @@ interface BubbleEventMessage {
 
 export class BaseWidget extends Emitter {
   _shouldBubbleEvents: boolean;
+  _bubbleEventsChannel: string;
   _selfObserver?: MutationObserver;
   _observeNodes: Map<Node, Node> = new Map();
 
-  constructor(_props: BaseWidgetProps = {}) {
+  constructor({ prefix = 'all', bubbleInIframe }: BaseWidgetProps = {}) {
     super();
 
-    this._shouldBubbleEvents =
-      !!_props.bubbleInIframe && window !== window.parent;
-    if (_props.bubbleInIframe) {
+    this._bubbleEventsChannel = `${prefix}-${BUBBLE_EVENTS_CHANNEL}`;
+    this._shouldBubbleEvents = !!bubbleInIframe && window !== window.parent;
+    if (bubbleInIframe) {
       this._addBubbleEventListeners();
     }
   }
@@ -36,7 +38,7 @@ export class BaseWidget extends Emitter {
         return true;
       }
       this._applyBubbleEvent({
-        channel: BUBBLE_EVENTS_CHANNEL,
+        channel: this._bubbleEventsChannel,
         eventName,
         eventArgs: JSON.stringify(eventArgs),
       });
@@ -52,7 +54,7 @@ export class BaseWidget extends Emitter {
 
   _onBubbleEvent = (event: MessageEvent<BubbleEventMessage | undefined>) => {
     const message = event.data;
-    if (message?.channel === BUBBLE_EVENTS_CHANNEL) {
+    if (message?.channel === this._bubbleEventsChannel) {
       this._applyBubbleEvent(message);
     }
   };
@@ -111,10 +113,8 @@ export class BaseWidget extends Emitter {
   }
 
   _disconnectObserver() {
-    if (this._selfObserver) {
-      this._selfObserver.disconnect();
-      this._selfObserver = undefined;
-    }
+    this._selfObserver?.disconnect();
+    this._selfObserver = undefined;
   }
 
   override dispose() {
