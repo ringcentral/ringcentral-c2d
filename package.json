@@ -1,6 +1,6 @@
 {
   "name": "ringcentral-c2d",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "RingCentral Click-to-Call and Click-to-Text library",
   "homepage": "https://github.com/ringcentral/ringcentral-c2d#readme",
   "repository": {
