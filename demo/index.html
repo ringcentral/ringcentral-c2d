@@ -29,9 +29,21 @@
     <p>+1-2345-678-907</p>
     <p>(213) 373-4253 ext. 1234</p>
     <p>
-      <input type="text" name="number" value="+12345678908" /><br>
-      <span>Elements (input/select/textarea) are disabled by default.</span><br>
-      <span>For test, turn on the `includeValueNodes` toggle in "ringcentral-js-widgets/ringcentral-c2d/src/matchers/LibPhoneNumberMatcher/processNode.ts"</span>
+      <input
+        type="text"
+        name="number"
+        title="text with phone number"
+        value="+12345678908"
+      /><br /><br />
+      <input
+        disabled
+        type="text"
+        name="number"
+        title="text with phone number"
+        value="+12345678908"
+      /><br /><br />
+      <textarea title="text with phone number" disabled>+12345678909</textarea
+      ><br />
     </p>
     <p><span class="st">... 8572135824 8572135825 8572135826 8572135827 8572135828 8572135829 8572135830 8572135831 <em>8572135832</em> 8572135833 8572135834<wbr>&nbsp;...</span></p>
     <script src="../build/index.js"></script>

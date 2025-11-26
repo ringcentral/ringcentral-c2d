@@ -1,4 +1,5 @@
 import { Emitter } from './lib';
+import { LibPhoneNumberMatcher } from './matchers';
 import {
   ObserverEvents,
   RangeObserver,
@@ -26,7 +27,9 @@ export class RingCentralC2D {
 
   constructor({
     widget = new BuiltinWidget(),
-    observer = new RangeObserver(),
+    observer = new RangeObserver({
+      matcher: new LibPhoneNumberMatcher({ includeFormElements: true }),
+    }),
   }: RingCentralC2DProps = {}) {
     this._widget = widget;
     this._observer = observer;

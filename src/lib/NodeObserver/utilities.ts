@@ -9,6 +9,14 @@ export function isElementNode(node: Node) {
   return node && node.nodeType === NodeType.ELEMENT_NODE;
 }
 
+export function isElementDisabled(node: HTMLElement) {
+  return (
+    node &&
+    (node.hasAttribute('disabled') || (node as HTMLInputElement).disabled)
+  );
+}
+
+
 export function isTextNode(node: Node) {
   return node && node.nodeType === NodeType.TEXT_NODE;
 }
