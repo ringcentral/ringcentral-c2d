@@ -1,10 +1,11 @@
-import { isValueNode } from '../../lib/NodeObserver/utilities';
+import {
+  isValueNode,
+  isElementDisabled,
+} from '../../lib/NodeObserver/utilities';
 import { RC_C2D_NUMBER_TAGNAME } from '../../lib/constants';
 import { getHref, hrefRegExp } from '../../lib/extractTelLinkNumber';
 import { NodeType } from '../../lib/nodeType';
 import type { MatchModel } from '../Matcher.interface';
-
-const includeValueNodes = false;
 
 export function isAnchorNode(node: Element): boolean {
   return node.tagName === 'A' && hrefRegExp.test(getHref(node));
@@ -17,25 +18,28 @@ export function isC2dNumberNode(node: Element): boolean {
 export function processNode(
   node: Node,
   detector: (value: string) => any[],
+  includeFormElements?: boolean,
 ): MatchModel[] {
   const matches: MatchModel[] = [];
   if (node.nodeType === NodeType.ELEMENT_NODE) {
     const element = node as HTMLElement;
-    if (isValueNode(element) && includeValueNodes) {
+    if (isValueNode(element)) {
       const valueElement = element as HTMLInputElement;
-      const items = detector(valueElement.value);
-      for (const item of items) {
-        matches.push({
-          startsNode: valueElement,
-          endsNode: valueElement,
-          startsAt: item.startsAt,
-          endsAt: item.endsAt,
-          context: {
-            phoneNumber: item.phoneNumber,
-            country: item.country,
-            ext: item.ext,
-          },
-        });
+      if (includeFormElements && isElementDisabled(valueElement)) {
+        const items = detector(valueElement.value);
+        for (const item of items) {
+          matches.push({
+            startsNode: valueElement,
+            endsNode: valueElement,
+            startsAt: item.startsAt,
+            endsAt: item.endsAt,
+            context: {
+              phoneNumber: item.phoneNumber,
+              country: item.country,
+              ext: item.ext,
+            },
+          });
+        }
       }
     } else if (isAnchorNode(element)) {
       const anchorElement = element as HTMLAnchorElement;

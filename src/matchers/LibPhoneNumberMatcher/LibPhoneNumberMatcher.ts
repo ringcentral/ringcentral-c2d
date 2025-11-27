@@ -21,6 +21,7 @@ export interface LibPhoneMatcherProps extends BaseMatcherProps {
     current: Node,
     detectFunc: (value: string) => any[],
   ) => MatchModel[];
+  includeFormElements?: boolean;
 }
 
 export class LibPhoneNumberMatcher extends BaseMatcher {
@@ -57,7 +58,7 @@ export class LibPhoneNumberMatcher extends BaseMatcher {
       while (current) {
         const newMatches = this._props.processNode
           ? this._props.processNode(current, this._detect)
-          : processNode(current, this._detect);
+          : processNode(current, this._detect, this._props.includeFormElements);
         if (newMatches && newMatches.length) {
           matches = matches.concat(newMatches);
         }
