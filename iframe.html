@@ -3,28 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <title>Demo</title>
-    <script src="https://unpkg.com/ringcentral-c2d@1.0.0/build/index.js"></script>
+    <script src="https://unpkg.com/ringcentral-c2d@2.0.4/build/index.js"></script>
   </head>
   <body>
     <p>In iframe: +12345678902</p>
     <p>In iframe: +12345678903</p>
-    <p>Click to SMS: <a href="sms:+12345678904">+12345678904</a></p>
+    <p>Click to Text: <a href="sms:+12345678904">+12345678904</a></p>
     <script>
-      window.clickToDialInject = new RingCentralC2D();
-      window.clickToDialInject.on(
-        RingCentralC2D.events.call,
-        function(phoneNumber) {
-          console.log('Click To Dial:', phoneNumber);
-          // alert('Click To Dial:' + phoneNumber);
-        },
-      );
-      window.clickToDialInject.on(
-        RingCentralC2D.events.text,
-        function(phoneNumber) {
-          console.log('Click To SMS:', phoneNumber);
-          // alert('Click To SMS:' + phoneNumber);
-        },
-      );
+      var clickToDial = new RingCentralC2D();
+      clickToDial.widget.on('call', function (phoneNumber) {
+        console.log('Iframe click to Call:', phoneNumber);
+        // alert('Iframe click to Call:' + phoneNumber);
+      });
+      clickToDial.widget.on('text', function (phoneNumber) {
+        console.log('Iframe click to Text:', phoneNumber);
+        // alert('Iframe click to Text:' + phoneNumber);
+      });
     </script>
   </body>
 </html>
