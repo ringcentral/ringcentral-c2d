@@ -4,7 +4,12 @@ import { isValueNode } from '../../lib/NodeObserver/utilities';
 import { BaseMatcher, type BaseMatcherProps } from '../BaseMatcher';
 import type { MatchModel } from '../Matcher.interface';
 
-import { isAnchorNode, isC2dNumberNode, processNode } from './processNode';
+import {
+  isAnchorNode,
+  isC2dNumberNode,
+  processNode,
+  type IncludeFormElementOptions,
+} from './processNode';
 
 export function acceptNode(node: Node): boolean {
   return !(
@@ -19,9 +24,9 @@ export interface LibPhoneMatcherProps extends BaseMatcherProps {
   areaCode?: string;
   processNode?: (
     current: Node,
-    detectFunc: (value: string) => any[],
+    detectFunc: (value: string) => any[]
   ) => MatchModel[];
-  includeFormElements?: boolean;
+  includeFormElements?: IncludeFormElementOptions;
 }
 
 export class LibPhoneNumberMatcher extends BaseMatcher {

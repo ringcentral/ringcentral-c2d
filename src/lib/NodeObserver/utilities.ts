@@ -16,6 +16,12 @@ export function isElementDisabled(node: HTMLElement) {
   );
 }
 
+export function isElementReadOnly(node: HTMLElement) {
+  return (
+    node &&
+    (node.hasAttribute('readonly') || (node as HTMLInputElement).readOnly)
+  );
+}
 
 export function isTextNode(node: Node) {
   return node && node.nodeType === NodeType.TEXT_NODE;

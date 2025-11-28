@@ -28,7 +28,7 @@ export class RingCentralC2D {
   constructor({
     widget = new BuiltinWidget(),
     observer = new RangeObserver({
-      matcher: new LibPhoneNumberMatcher({ includeFormElements: true }),
+      matcher: new LibPhoneNumberMatcher({ includeFormElements: 'readonly' }),
     }),
   }: RingCentralC2DProps = {}) {
     this._widget = widget;
