@@ -34,19 +34,29 @@
         name="number"
         title="text with phone number"
         value="+12345678908"
-      /><br /><br />
+      /> <label>Editable</label>
+      <br /><br />
+      <input
+        type="text"
+        readonly
+        name="number"
+        title="text with phone number"
+        value="+12345678908"
+      /> <label>Readonly</label>
+      <br /><br />
       <input
         disabled
         type="text"
         name="number"
         title="text with phone number"
         value="+12345678908"
-      /><br /><br />
+      /> <label>Disabled</label>
+      <br /><br />
       <textarea title="text with phone number" disabled>+12345678909</textarea
       ><br />
     </p>
     <p><span class="st">... 8572135824 8572135825 8572135826 8572135827 8572135828 8572135829 8572135830 8572135831 <em>8572135832</em> 8572135833 8572135834<wbr>&nbsp;...</span></p>
-    <script src="https://unpkg.com/ringcentral-c2d@2.0.4/build/index.js"></script>
+    <script src="https://unpkg.com/ringcentral-c2d@2.0.5/build/index.js"></script>
     <script>
       var clickToDial = new RingCentralC2D();
       clickToDial.widget.on('call', function (phoneNumber) {
