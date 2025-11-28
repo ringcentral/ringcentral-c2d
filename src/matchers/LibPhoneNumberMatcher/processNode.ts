@@ -45,11 +45,13 @@ export function isFormElementApplicable(
     return true;
   }
   const isEditable = isEditableElement(element);
-  return option === 'readonly'
-    ? !isEditable
-    : option === 'editable'
-    ? isEditable
-    : false;
+  if (option === 'readonly') {
+    return !isEditable;
+  }
+  if (option === 'editable') {
+    return isEditable;
+  }
+  return false;
 }
 
 export function processNode(
