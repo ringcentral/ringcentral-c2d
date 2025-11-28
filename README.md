@@ -56,7 +56,7 @@ clickToDial.dispose();
 ### CDN
 
 ```html
-<script src="https://unpkg.com/ringcentral-c2d@2.0.2/build/index.js"></script>
+<script src="https://unpkg.com/ringcentral-c2d@2.0.4/build/index.js"></script>
 <script>
     var clickToDial = new RingCentralC2D();
 
